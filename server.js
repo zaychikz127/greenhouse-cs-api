@@ -5,15 +5,17 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const loginRoute = require('./api/login');
+const resetPasswordRoute = require('./api/reset-password');
 
 const app = express();
-const PORT = process.env.PORT; // ← ดึง PORT จาก .env (fallback = 4500)
+const PORT = process.env.PORT; 
 
 app.use(cors());
 app.use(bodyParser.json());
 
 // เส้นทาง API
 app.use('/api/login', loginRoute);
+app.use('/api/reset-password', resetPasswordRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
