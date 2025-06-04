@@ -1,11 +1,12 @@
 require('dotenv').config();
-
 const express = require('express');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
 const router = express.Router();
 
+// สร้าง connection pool
 const db = mysql.createPool({
     connectionLimit: 10,
     host: process.env.DB_HOST,
@@ -15,43 +16,46 @@ const db = mysql.createPool({
     database: process.env.DB_NAME
 });
 
+// POST /api/login
 router.post('/', async (req, res) => {
     const { username, password } = req.body;
 
+    // ตรวจสอบ input
     if (!username || !password) {
         return res.status(400).json({ message: 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน' });
     }
 
     try {
-        const [results] = await db.query('SELECT * FROM admins WHERE username = ?', [username]);
+        // ตรวจสอบชื่อผู้ใช้
+        const [users] = await db.query('SELECT * FROM admins WHERE username = ?', [username]);
 
-        if (results.length === 0) {
-            return res.status(401).json({ message: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' });
+        if (users.length === 0) {
+            return res.status(401).json({ message: 'ไม่พบชื่อผู้ใช้นี้ในระบบ' });
         }
 
-        const user = results[0];
-        const isMatch = await bcrypt.compare(password, user.password);
+        const user = users[0];
 
-        if (!isMatch) {
-            return res.status(401).json({ message: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' });
+        // ตรวจสอบรหัสผ่าน
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        if (!isPasswordCorrect) {
+            return res.status(401).json({ message: 'รหัสผ่านไม่ถูกต้อง' });
         }
 
+        // สร้าง JWT token
         const token = jwt.sign(
-            {
-                uuid: user.uuid,
-                username: user.username
-            },
+            { uuid: user.uuid, username: user.username },
             process.env.JWT_SECRET,
             { expiresIn: '10d' }
         );
 
-        res.json({
+        return res.status(200).json({
             message: 'เข้าสู่ระบบสำเร็จ',
             token
         });
-    } catch (err) {
-        console.error('Login error:', err);
-        res.status(500).json({ message: 'เกิดข้อผิดพลาดที่เซิร์ฟเวอร์' });
+
+    } catch (error) {
+        console.error('Login error:', error);
+        return res.status(500).json({ message: 'เกิดข้อผิดพลาดที่เซิร์ฟเวอร์ กรุณาลองใหม่ภายหลัง' });
     }
 });
 

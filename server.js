@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 
 const loginRoute = require('./api/login');
 const resetPasswordRoute = require('./api/reset-password');
+const changePasswordRoute = require('./api/change-password');
 
 const app = express();
 const PORT = process.env.PORT; 
@@ -16,7 +17,8 @@ app.use(bodyParser.json());
 // เส้นทาง API
 app.use('/api/login', loginRoute);
 app.use('/api/reset-password', resetPasswordRoute);
+app.use('/api/change-password', changePasswordRoute);
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running...`);
 });
