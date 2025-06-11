@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
-// สร้าง connection pool
 const db = mysql.createPool({
     connectionLimit: 10,
     host: process.env.DB_HOST,
@@ -16,17 +15,14 @@ const db = mysql.createPool({
     database: process.env.DB_NAME
 });
 
-// POST /api/login
 router.post('/', async (req, res) => {
     const { username, password } = req.body;
 
-    // ตรวจสอบ input
     if (!username || !password) {
         return res.status(400).json({ message: 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน' });
     }
 
     try {
-        // ตรวจสอบชื่อผู้ใช้
         const [users] = await db.query('SELECT * FROM admins WHERE username = ?', [username]);
 
         if (users.length === 0) {
@@ -35,13 +31,11 @@ router.post('/', async (req, res) => {
 
         const user = users[0];
 
-        // ตรวจสอบรหัสผ่าน
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) {
             return res.status(401).json({ message: 'รหัสผ่านไม่ถูกต้อง' });
         }
 
-        // สร้าง JWT token
         const token = jwt.sign(
             { uuid: user.uuid, username: user.username },
             process.env.JWT_SECRET,
