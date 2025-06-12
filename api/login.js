@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) {
-            return res.status(401).json({ message: 'รหัสผ่านไม่ถูกต้อง' });
+            return res.status(401).json({ message: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' });
         }
 
         const token = jwt.sign(
