@@ -11,6 +11,7 @@ const changePasswordRoute = require('./api/change-password');
 const rotaryTowersRoute = require('./api/rotary-towers');
 const controlTowerRoute = require('./api/control-tower');
 const imageHomeRoutes = require('./api/image-home'); 
+const homeContentRoutes = require('./api/home-content'); 
 
 const app = express();
 const PORT = process.env.PORT; 
@@ -27,6 +28,7 @@ app.use('/api/change-password', changePasswordRoute);
 app.use('/api/rotary-towers', rotaryTowersRoute);
 app.use('/api/control-tower', controlTowerRoute);
 app.use('/api/image-home', imageHomeRoutes); 
+app.use('/api/home-content', homeContentRoutes); 
 
 app.listen(PORT, () => {
     console.log(`Server is running...`);
