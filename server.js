@@ -12,6 +12,7 @@ const rotaryTowersRoute = require('./api/rotary-towers');
 const controlTowerRoute = require('./api/control-tower');
 const imageHomeRoutes = require('./api/image-home'); 
 const homeContentRoutes = require('./api/home-content'); 
+const sensorDataRoutes = require('./api/sensor-data'); 
 
 const app = express();
 const PORT = process.env.PORT; 
@@ -29,6 +30,7 @@ app.use('/api/rotary-towers', rotaryTowersRoute);
 app.use('/api/control-tower', controlTowerRoute);
 app.use('/api/image-home', imageHomeRoutes); 
 app.use('/api/home-content', homeContentRoutes); 
+app.use('/api/sensor-data', sensorDataRoutes); 
 
 app.listen(PORT, () => {
     console.log(`Server is running...`);

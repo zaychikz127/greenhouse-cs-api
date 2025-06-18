@@ -55,8 +55,6 @@ router.post('/images', upload.single('image'), async (req, res) => {
   }
 });
 
-module.exports = router;
-
 // DELETE /api/image-home/images/:id
 router.delete('/images/:id', async (req, res) => {
   const imageId = req.params.id;
@@ -88,3 +86,4 @@ router.delete('/images/:id', async (req, res) => {
   }
 });
 
+module.exports = router;
